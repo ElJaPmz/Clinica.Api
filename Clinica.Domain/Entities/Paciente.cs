@@ -21,7 +21,7 @@ namespace Clinica.Domain.Entities
 
         public string Direccion { get; set; } = null!;
 
-        public string DocumentoIdentidad { get; set; } = null!;
+        public string Cedula { get; set; } = null!;
 
         public string TipoPaciente { get; set; } = null!;
 
