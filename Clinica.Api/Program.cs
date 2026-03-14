@@ -27,7 +27,7 @@ if (variablesFaltantes.Any())
     throw new Exception($"Faltan variables de entorno: {string.Join("", variablesFaltantes)}");
 }
 
-// Construir la cadena de Conexión
+// Construir la cadena de Conexión con postgrel
 var connectionString =
     $"Host={host};" +
     $"Port={port};" +
