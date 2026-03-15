@@ -212,6 +212,7 @@ namespace Clinica.Infrastructure.Data
                 // Un consultorio no puede tener dos citas a la misma hora
                 entity.HasIndex(c => new { c.IdConsultorio, c.Fecha, c.HoraInicio })
                     .IsUnique();
+
             });
         }
     }
