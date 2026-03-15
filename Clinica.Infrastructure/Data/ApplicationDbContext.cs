@@ -15,6 +15,7 @@ namespace Clinica.Infrastructure.Data
         public DbSet<Consultorio> Consultorios => Set<Consultorio>();
         public DbSet<Paciente> Pacientes => Set<Paciente>();
         public DbSet<Medico> Medicos => Set<Medico>();
+        public DbSet<Especialidad> Especialidads => Set<Especialidad>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
