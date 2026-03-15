@@ -13,7 +13,7 @@ namespace Clinica.Infrastructure.Data
         }
 
         public DbSet<Consultorio> Consultorios => Set<Consultorio>();
-        public DbSet<Paciente> Pacientes => Set<Paciente>();
+        public DbSet<Medico> Medicos => Set<Medico>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -86,6 +86,60 @@ namespace Clinica.Infrastructure.Data
                 entity.HasIndex(p => p.Cedula)
                 .IsUnique();
             });
+
+
+            // cuando migre se cree la tabla Medicos con las propiedades de la clase Medico
+            // Medicos
+            builder.Entity<Medico>(static entity =>
+            {
+                entity.HasKey(m => m.Id_Medico);
+
+                entity.Property(m => m.Id_Medico)
+                .ValueGeneratedOnAdd();
+
+                entity.Property(m => m.Nombre)
+                .IsRequired()
+                .HasMaxLength(15);
+
+                entity.Property(m => m.Apellido)
+                .IsRequired()
+                .HasMaxLength(15);
+
+                entity.Property(m => m.Id_Especialidad)
+                .IsRequired();
+
+                entity.Property(m => m.telefono)
+                .IsRequired()
+                .HasMaxLength(10);
+
+                entity.Property(m => m.Correo)
+                .IsRequired()
+                .HasMaxLength(30);
+
+                entity.Property(m => m.Estado)
+                .IsRequired()
+                .HasMaxLength(50);
+
+
+                //Restricción de número de consultorio para no repetir el mismo número
+                entity.HasIndex(m => m.Correo)
+                .IsUnique();
+
+                entity.HasIndex(m => m.telefono)
+                .IsUnique();
+
+                //Relacion entre Medico y Especialidad---(necesito hacer la relacion de ambos)
+                //entity.HasOne(m => m.Id_Especialidad);
+                //.WithMany(e => e.Id_Especialidad)
+
+
+
+
+
+
+
+            });
         }
+       
     }
 }
