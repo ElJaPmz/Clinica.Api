@@ -14,7 +14,6 @@ namespace Clinica.Infrastructure.Data
 
         public DbSet<Consultorio> Consultorios => Set<Consultorio>();
         public DbSet<Medico> Medicos => Set<Medico>();
-        public DbSet<Especialidad> Especialidades => Set<Especialidad>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -84,6 +83,15 @@ namespace Clinica.Infrastructure.Data
 
                 entity.HasIndex(m => m.telefono)
                 .IsUnique();
+
+                //Relacion entre Medico y Especialidad---(necesito hacer la relacion de ambos)
+                //entity.HasOne(m => m.Id_Especialidad);
+                //.WithMany(e => e.Id_Especialidad)
+
+
+
+
+
 
 
             });
