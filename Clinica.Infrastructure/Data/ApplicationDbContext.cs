@@ -13,6 +13,7 @@ namespace Clinica.Infrastructure.Data
         }
 
         public DbSet<Consultorio> Consultorios => Set<Consultorio>();
+        public DbSet<Especialidad> Especialidades => Set<Especialidad>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -39,6 +40,26 @@ namespace Clinica.Infrastructure.Data
                 //Restricción de número de consultorio para no repetir el mismo número
                 entity.HasIndex(c => c.NumeroConsultorio)
                 .IsUnique();
+
+            });
+
+            // Especialidades
+            builder.Entity<Especialidad>(static entity =>
+            {
+                entity.HasKey(e => e.Id_Especialidad);
+
+                entity.Property(e => e.Id_Especialidad)
+                .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Nombre_Especialidad)
+                .IsRequired()
+                .HasMaxLength(50);
+
+
+                //Restricción de número de especiaidades para no repetir el mismo número
+                // Evitar especialidades duplicadas
+                entity.HasIndex(e => e.Nombre_Especialidad)
+                    .IsUnique();
 
             });
         }
