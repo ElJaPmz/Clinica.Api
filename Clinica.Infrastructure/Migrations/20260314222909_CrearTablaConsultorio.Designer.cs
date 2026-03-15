@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Clinica.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260314204128_CrearTablaConsultorio")]
+    [Migration("20260314222909_CrearTablaConsultorio")]
     partial class CrearTablaConsultorio
     {
         /// <inheritdoc />

@@ -14,8 +14,8 @@
     <Folder Include="DTOs\" />
     <Folder Include="Interface\Persistencia\" />
     <Folder Include="Interface\Service\" />
-    <Folder Include="Service\" />
     <Folder Include="Response\" />
+    <Folder Include="Service\" />
   </ItemGroup>
 
 </Project>

@@ -49,6 +49,52 @@ namespace Clinica.Infrastructure.Migrations
 
                     b.ToTable("Consultorios");
                 });
+
+            modelBuilder.Entity("Clinica.Domain.Entities.Medico", b =>
+                {
+                    b.Property<int>("Id_Medico")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Medico"));
+
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
+
+                    b.Property<string>("Correo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("Id_Especialidad")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
+
+                    b.Property<int>("telefono")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id_Medico");
+
+                    b.HasIndex("Correo")
+                        .IsUnique();
+
+                    b.HasIndex("telefono")
+                        .IsUnique();
+
+                    b.ToTable("Medico");
+                });
 #pragma warning restore 612, 618
         }
     }
