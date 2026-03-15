@@ -13,6 +13,7 @@ namespace Clinica.Infrastructure.Data
         }
 
         public DbSet<Consultorio> Consultorios => Set<Consultorio>();
+        public DbSet<Paciente> Pacientes => Set<Paciente>();
         public DbSet<Medico> Medicos => Set<Medico>();
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -131,11 +132,6 @@ namespace Clinica.Infrastructure.Data
                 //Relacion entre Medico y Especialidad---(necesito hacer la relacion de ambos)
                 //entity.HasOne(m => m.Id_Especialidad);
                 //.WithMany(e => e.Id_Especialidad)
-
-
-
-
-
 
 
             });
