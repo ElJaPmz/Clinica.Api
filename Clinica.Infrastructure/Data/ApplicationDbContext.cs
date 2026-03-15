@@ -1,8 +1,6 @@
 ﻿using Clinica.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Clinica.Infrastructure.Data
 {
@@ -16,147 +14,205 @@ namespace Clinica.Infrastructure.Data
         public DbSet<Paciente> Pacientes => Set<Paciente>();
         public DbSet<Medico> Medicos => Set<Medico>();
         public DbSet<Especialidad> Especialidads => Set<Especialidad>();
+        public DbSet<Cita> Citas => Set<Cita>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            // Consultorios
-            builder.Entity<Consultorio>(static entity =>
+            // CONSULTORIOS
+            builder.Entity<Consultorio>(entity =>
             {
                 entity.HasKey(c => c.Id_Consultorio);
 
                 entity.Property(c => c.Id_Consultorio)
-                .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(c => c.NumeroConsultorio)
-                .IsRequired();
+                    .IsRequired();
 
                 entity.Property(c => c.Descripcion)
-                .IsRequired()
-                .HasMaxLength(100);
+                    .IsRequired()
+                    .HasMaxLength(100);
 
                 entity.Property(c => c.Estado)
-                .IsRequired()
-                .HasMaxLength(50);
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-                //Restricción de número de consultorio para no repetir el mismo número
+                // Evitar consultorios duplicados
                 entity.HasIndex(c => c.NumeroConsultorio)
-                .IsUnique();
+                    .IsUnique();
             });
 
-            // Pacientes
-            builder.Entity<Paciente>(static entity =>
+
+            // PACIENTES
+            builder.Entity<Paciente>(entity =>
             {
                 entity.HasKey(p => p.IdPaciente);
 
                 entity.Property(p => p.IdPaciente)
-                .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(p => p.Nombre)
-                .IsRequired()
-                .HasMaxLength(100);
+                    .IsRequired()
+                    .HasMaxLength(100);
 
                 entity.Property(p => p.Apellido)
-                .IsRequired()
-                .HasMaxLength(100);
+                    .IsRequired()
+                    .HasMaxLength(100);
 
                 entity.Property(p => p.FechaNacimiento)
-                .IsRequired();
+                    .IsRequired();
 
                 entity.Property(p => p.Telefono)
-                .IsRequired()
-                .HasMaxLength(20);
+                    .IsRequired()
+                    .HasMaxLength(20);
 
                 entity.Property(p => p.Email)
-                .IsRequired()
-                .HasMaxLength(100);
+                    .IsRequired()
+                    .HasMaxLength(100);
 
                 entity.Property(p => p.Direccion)
-                .IsRequired()
-                .HasMaxLength(200);
+                    .IsRequired()
+                    .HasMaxLength(200);
 
                 entity.Property(p => p.Cedula)
-                .IsRequired()
-                .HasMaxLength(19);
+                    .IsRequired()
+                    .HasMaxLength(19);
 
                 entity.Property(p => p.TipoPaciente)
-                .IsRequired()
-                .HasMaxLength(20);
+                    .IsRequired()
+                    .HasMaxLength(20);
 
-                // Restricción para evitar documentos duplicados
+                // Evitar cédulas duplicadas
                 entity.HasIndex(p => p.Cedula)
-                .IsUnique();
+                    .IsUnique();
             });
 
 
-            // cuando migre se cree la tabla Medicos con las propiedades de la clase Medico
-            // Medicos
-            builder.Entity<Medico>(static entity =>
+            // MEDICOS
+            builder.Entity<Medico>(entity =>
             {
                 entity.HasKey(m => m.Id_Medico);
 
                 entity.Property(m => m.Id_Medico)
-                .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(m => m.Nombre)
-                .IsRequired()
-                .HasMaxLength(15);
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(m => m.Apellido)
-                .IsRequired()
-                .HasMaxLength(15);
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(m => m.Id_Especialidad)
-                .IsRequired();
+                    .IsRequired();
 
                 entity.Property(m => m.telefono)
-                .IsRequired()
-                .HasMaxLength(10);
+                    .IsRequired()
+                    .HasMaxLength(10);
 
                 entity.Property(m => m.Correo)
-                .IsRequired()
-                .HasMaxLength(30);
+                    .IsRequired()
+                    .HasMaxLength(100);
 
                 entity.Property(m => m.Estado)
-                .IsRequired()
-                .HasMaxLength(50);
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-
-                //Restricción de número de consultorio para no repetir el mismo número
+                // Restricciones únicas
                 entity.HasIndex(m => m.Correo)
-                .IsUnique();
+                    .IsUnique();
 
                 entity.HasIndex(m => m.telefono)
-                .IsUnique();
+                    .IsUnique();
 
-                //Relacion entre Medico y Especialidad---(necesito hacer la relacion de ambos)
-                //entity.HasOne(m => m.Id_Especialidad);
-                //.WithMany(e => e.Id_Especialidad)
-
-
+                // Relación Medico -> Especialidad
+                entity.HasOne<Especialidad>()
+                    .WithMany()
+                    .HasForeignKey(m => m.Id_Especialidad)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // Especialidades
-            builder.Entity<Especialidad>(static entity =>
+
+            // ESPECIALIDADES
+            builder.Entity<Especialidad>(entity =>
             {
                 entity.HasKey(e => e.Id_Especialidad);
 
                 entity.Property(e => e.Id_Especialidad)
-                .ValueGeneratedOnAdd();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Nombre_Especialidad)
-                .IsRequired()
-                .HasMaxLength(50);
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-
-                //Restricción de número de especiaidades para no repetir el mismo número
                 // Evitar especialidades duplicadas
                 entity.HasIndex(e => e.Nombre_Especialidad)
                     .IsUnique();
+            });
 
+
+            // CITAS
+            builder.Entity<Cita>(entity =>
+            {
+                entity.HasKey(c => c.IdCita);
+
+                entity.Property(c => c.IdCita)
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(c => c.IdPaciente)
+                    .IsRequired();
+
+                entity.Property(c => c.IdMedico)
+                    .IsRequired();
+
+                entity.Property(c => c.IdConsultorio)
+                    .IsRequired();
+
+                entity.Property(c => c.Fecha)
+                    .IsRequired();
+
+                entity.Property(c => c.HoraInicio)
+                    .IsRequired();
+
+                entity.Property(c => c.HoraFin)
+                    .IsRequired();
+
+                entity.Property(c => c.EstadoCita)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(c => c.TipoCita)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                // RELACIONES
+
+                entity.HasOne<Paciente>()
+                    .WithMany()
+                    .HasForeignKey(c => c.IdPaciente)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Medico>()
+                    .WithMany()
+                    .HasForeignKey(c => c.IdMedico)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Consultorio>()
+                    .WithMany()
+                    .HasForeignKey(c => c.IdConsultorio)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // Un médico no puede tener dos citas a la misma hora
+                entity.HasIndex(c => new { c.IdMedico, c.Fecha, c.HoraInicio })
+                    .IsUnique();
+
+                // Un consultorio no puede tener dos citas a la misma hora
+                entity.HasIndex(c => new { c.IdConsultorio, c.Fecha, c.HoraInicio })
+                    .IsUnique();
             });
         }
-       
     }
 }
