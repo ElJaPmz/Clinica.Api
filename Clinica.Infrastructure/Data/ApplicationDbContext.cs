@@ -15,6 +15,7 @@ namespace Clinica.Infrastructure.Data
         public DbSet<Medico> Medicos => Set<Medico>();
         public DbSet<Especialidad> Especialidads => Set<Especialidad>();
         public DbSet<Cita> Citas => Set<Cita>();
+        public DbSet<Recordatorio> Recordatorios => Set<Recordatorio>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -213,6 +214,43 @@ namespace Clinica.Infrastructure.Data
                 entity.HasIndex(c => new { c.IdConsultorio, c.Fecha, c.HoraInicio })
                     .IsUnique();
 
+                // RECORDATORIOS
+                builder.Entity<Recordatorio>(entity =>
+                {
+                    entity.HasKey(r => r.IdRecordatorio);
+
+                    entity.Property(r => r.IdRecordatorio)
+                        .ValueGeneratedOnAdd();
+
+                    entity.Property(r => r.IdCita)
+                        .IsRequired();
+
+                    entity.Property(r => r.TipoNotificacion)
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    entity.Property(r => r.FechaEnvio)
+                        .IsRequired();
+
+                    entity.Property(r => r.Estado)
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    // Relación con Cita
+                    entity.HasOne<Cita>()
+                        .WithMany()
+                        .HasForeignKey(r => r.IdCita)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    // Índices para mejorar consultas
+                    entity.HasIndex(r => r.IdCita);
+
+                    entity.HasIndex(r => r.FechaEnvio);
+
+                    // Evitar duplicados del mismo recordatorio
+                    entity.HasIndex(r => new { r.IdCita, r.TipoNotificacion, r.FechaEnvio })
+                        .IsUnique();
+                });
             });
         }
     }
