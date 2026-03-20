@@ -15,11 +15,11 @@ namespace Clinica.Infrastructure.Data
         public DbSet<Medico> Medicos => Set<Medico>();
         public DbSet<Especialidad> Especialidads => Set<Especialidad>();
         public DbSet<Cita> Citas => Set<Cita>();
-<<<<<<< HEAD
+
         public DbSet<HistorialCita> HistorialCitas => Set<HistorialCita>();
-=======
+
         public DbSet<Recordatorio> Recordatorios => Set<Recordatorio>();
->>>>>>> origin/Recordatorios
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
