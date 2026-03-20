@@ -15,6 +15,7 @@ namespace Clinica.Infrastructure.Data
         public DbSet<Medico> Medicos => Set<Medico>();
         public DbSet<Especialidad> Especialidads => Set<Especialidad>();
         public DbSet<Cita> Citas => Set<Cita>();
+        public DbSet<HistorialCita> HistorialCitas => Set<HistorialCita>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -213,6 +214,42 @@ namespace Clinica.Infrastructure.Data
                 entity.HasIndex(c => new { c.IdConsultorio, c.Fecha, c.HoraInicio })
                     .IsUnique();
 
+            });
+
+            // HISTORIAL DE CITAS
+            builder.Entity<HistorialCita>(entity =>
+            {
+                entity.HasKey(h => h.Id_Historial);
+
+                entity.Property(h => h.Id_Historial)
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(h => h.Id_Cita)
+                    .IsRequired();
+
+                entity.Property(h => h.Id_Usuario)
+                    .IsRequired();
+
+                entity.Property(h => h.Accion)
+                    .IsRequired()
+                    .HasMaxLength(20); // Suficiente para "Reprogramar", "Cancelar", etc.
+
+                entity.Property(h => h.Fecha_Hora)
+                    .IsRequired()
+                    .HasDefaultValueSql("GETDATE()"); // Para SQL Server, asegura la hora del servidor
+
+                entity.Property(h => h.Comentario)
+                    .HasMaxLength(500); // Espacio generoso para explicar cambios o motivos
+
+                // RELACIONES
+                // Relación con Cita: Si se borra una cita (raro), se borra su historial
+         
+                entity.HasOne<Cita>()
+                    .WithMany()
+                    .HasForeignKey(h => h.Id_Cita)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                
             });
         }
     }
