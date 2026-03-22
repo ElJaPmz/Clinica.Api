@@ -277,7 +277,7 @@ namespace Clinica.Infrastructure.Data
 
                 entity.Property(h => h.Fecha_Hora)
                     .IsRequired()
-                    .HasDefaultValueSql("GETDATE()"); // Para SQL Server, asegura la hora del servidor
+                    .HasDefaultValueSql("NOW()"); // Para SQL Server, asegura la hora del servidor
 
                 entity.Property(h => h.Comentario)
                     .HasMaxLength(500); // Espacio generoso para explicar cambios o motivos
