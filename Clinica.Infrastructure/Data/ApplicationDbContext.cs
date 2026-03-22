@@ -288,7 +288,7 @@ namespace Clinica.Infrastructure.Data
                 entity.HasOne<Cita>()
                     .WithMany()
                     .HasForeignKey(h => h.Id_Cita)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 
             });
