@@ -1,7 +1,5 @@
 using Clinica.Application.Interface.Persistencia;
 using Clinica.Application.Interface.Service;
-using Clinica.Application.Mappings;
-using Clinica.Application.Service;
 using Clinica.Infrastructure.Data;
 using Clinica.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
