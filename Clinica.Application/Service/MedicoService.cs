@@ -25,11 +25,11 @@ namespace Clinica.Application.Service
             if (id <= 0)
             
                 //throw new ArgumentException("El id debe ser mayor que cero.", nameof(id));
-               throw new ArgumentException("El id debe ser mayor que cero.";
+               throw new ArgumentException("El id debe ser mayor que cero.");
 
             var medico = await _repository.ObtenerMedicoPorIdAsync(id);
             if (medico == null)
-                 throw new KeyNotFoundException($"No se encontró el registro con ID: {id}";
+                 throw new KeyNotFoundException($"No se encontró el registro con ID: {id}");
                 //.ConfigureAwait(false);
                 
             
@@ -41,32 +41,32 @@ namespace Clinica.Application.Service
 
         public async Task<IEnumerable<MedicoDto>> ObtenerTodosAsync(int pagina, int tamanioPagina)
         {
-            var medicos = await _repository.ObtenerTodosAsync(pagina, tamanioPagina)
+            var medicos = await _repository.ObtenerTodosAsync(pagina, tamanioPagina);
                 //.ConfigureAwait(false);
             return _mapper.Map<IEnumerable<MedicoDto>>(medicos);
         }
 
         public async Task<IEnumerable<MedicoDto>> BuscarMedicosAsync(string valor, int pagina, int tamanioPagina)
         {
-            var medicos = await _repository.BuscarMedicosAsync(valor, pagina, tamanioPagina)
+            var medicos = await _repository.BuscarMedicosAsync(valor, pagina, tamanioPagina);
                 //.ConfigureAwait(false);
             return _mapper.Map<IEnumerable<MedicoDto>>(medicos);
         }
 
         public async Task<int> BuscarTodosAsync()
           => await _repository.BuscarTodosAsync();
-                //.ConfigureAwait(false);
-        
+        //.ConfigureAwait(false);
+
 
         public async Task<int> ContarMedicosPorBusquedaAsync(string valor)
-            => await _repository.ContarMedicosPorBusquedaAsync(valor)
+            => await _repository.ContarMedicosPorBusquedaAsync(valor);
                 //.ConfigureAwait(false);
         
 
         public async Task<MedicoDto> CrearAsync(MedicoCrearDto dto)
         {
             var medico = _mapper.Map<Medico>(dto);
-            await _repository.CrearAsync(medico)
+            await _repository.CrearAsync(medico);
                 //.ConfigureAwait(false);
             return _mapper.Map<MedicoDto>(medico);
         }
@@ -81,15 +81,15 @@ namespace Clinica.Application.Service
 
             _mapper.Map(dto, existente);
 
-            await _repository.ActualizarAsync(existente)
+            await _repository.ActualizarAsync(existente);
                 //.ConfigureAwait(false);
             return _mapper.Map<MedicoDto>(existente);
         }
 
         public async Task EliminarAsync(int id)
         {
-            var medico = await _repository.ObtenerMedicoPorIdAsync(id);
-                ?? throw new KeyNotFoundException("Registro no encontrado.")
+            var medico = await _repository.ObtenerMedicoPorIdAsync(id)
+                ?? throw new KeyNotFoundException("Registro no encontrado.");
 
             await _repository.EliminarAsync(id);
             //.ConfigureAwait(false);
