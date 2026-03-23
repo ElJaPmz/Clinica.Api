@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Clinica.Application.DTOs.Medico;
-using Clinica.Application.Exceptions;
+//using Clinica.Application.Exceptions;
 using Clinica.Application.Interface.Persistencia;
-using Clinica.Application.Interface.Service;
 using Clinica.Domain.Entities;
 
-namespace Clinica.Application.Service
+namespace Clinica.Application.Interface.Service
 {
     public sealed class MedicoService: IMedicoService
     {

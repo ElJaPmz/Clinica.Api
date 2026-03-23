@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Clinica.Application.DTOs.Consultorio;
+using Clinica.Application.DTOs.Medico;
 using Clinica.Application.DTOs.Paciente;
 using Clinica.Domain.Entities;
 using System;
