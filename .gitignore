@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /Clinica.Infrastructure/Migrations/20260315045242_CrearTablas.cs
 /Clinica.Infrastructure/Migrations/20260315045242_CrearTablas.Designer.cs
 /Clinica.Infrastructure/Migrations
+/Clinica.Application/Clinica.Application.csproj
