@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Clinica.Domain.Entities;
 
-using Clinica.Domain.Entities;
-
-namespace Clinica.Application.Interface.Persistencia
+public interface IPacienteRepository
 {
-    public interface IPacienteRepository
-    {
-        Task<List<Paciente>> GetAllAsync();
+    Task<Paciente?> ObtenerPacientePorIdAsync(int id);
 
-        Task<Paciente?> GetByIdAsync(int id);
+    Task<IEnumerable<Paciente>> ObtenerTodosAsync(int pagina, int tamanioPagina);
 
-        Task AddAsync(Paciente paciente);
+    Task<IEnumerable<Paciente>> BuscarPacientes(string valor, int pagina, int tamanioPagina);
 
-        Task UpdateAsync(Paciente paciente);
+    Task<int> ContarTodosAsync();
 
-        Task DeleteAsync(int id);
-    }
+    Task<int> ContarPacientesPorBusquedaAsync(string valor);
+
+    Task CrearAsync(Paciente paciente);
+
+    Task ActualizarAsync(Paciente paciente);
+
+    Task<int> EliminarAsync(int id);
 }

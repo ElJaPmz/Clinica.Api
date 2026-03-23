@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Clinica.Application.DTOs.Paciente;
+﻿using Clinica.Application.DTOs.Paciente;
 
 namespace Clinica.Application.Interface.Service
 {
     public interface IPacienteService
     {
-        Task<List<PacienteDto>> GetAllAsync();
+        Task<List<PacienteDto>> ObtenerTodosAsync(int pagina, int tamanioPagina);
 
-        Task<PacienteDto?> GetByIdAsync(int id);
+        Task<int> ContarTodosAsync();
 
-        Task AddAsync(PacienteCrearDto dto);
+        Task<List<PacienteDto>> BuscarPacientes(string valor, int pagina, int tamanioPagina);
 
-        Task UpdateAsync(PacienteActualizarDto dto);
+        Task<int> ContarPacientesPorBusquedaAsync(string valor);
 
-        Task DeleteAsync(int id);
+        Task<PacienteDto?> ObtenerPacientePorIdAsync(int id);
+
+        Task<PacienteDto> CrearAsync(PacienteCrearDto dto);
+
+        Task ActualizarAsync(int id, PacienteActualizarDto dto);
+
+        Task EliminarAsync(int id);
     }
 }

@@ -1,6 +1,7 @@
 using Clinica.Application.Interface.Persistencia;
 using Clinica.Application.Interface.Service;
 using Clinica.Application.Mappings;
+using Clinica.Application.Service;
 using Clinica.Infrastructure.Data;
 using Clinica.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -47,9 +48,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //Registrar repositorios con sus interfaces
 builder.Services.AddScoped<IConsultorioRepository, ConsultorioRepository>();
+builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
 
 //Registrar servicios con sus interfaces
 builder.Services.AddScoped<IConsultorioService, ConsultorioService>();
+builder.Services.AddScoped<IPacienteService, PacienteService>();
 
 //Registrar AutoMapper
 builder.Services.AddAutoMapper(cgf => { }, typeof(MappingProfile).Assembly);

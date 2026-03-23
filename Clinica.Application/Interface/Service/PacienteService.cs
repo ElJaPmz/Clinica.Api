@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using AutoMapper;
 using Clinica.Application.DTOs.Paciente;
 using Clinica.Application.Interface.Persistencia;
 using Clinica.Application.Interface.Service;
@@ -12,88 +9,60 @@ namespace Clinica.Application.Service
     public class PacienteService : IPacienteService
     {
         private readonly IPacienteRepository _repository;
+        private readonly IMapper _mapper;
 
-        public PacienteService(IPacienteRepository repository)
+        public PacienteService(IPacienteRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
-        public async Task<List<PacienteDto>> GetAllAsync()
+        public async Task<List<PacienteDto>> ObtenerTodosAsync(int pagina, int tamanioPagina)
         {
-            var pacientes = await _repository.GetAllAsync();
-
-            return pacientes.Select(p => new PacienteDto
-            {
-                IdPaciente = p.IdPaciente,
-                Nombre = p.Nombre,
-                Apellido = p.Apellido,
-                FechaNacimiento = p.FechaNacimiento,
-                Telefono = p.Telefono,
-                Email = p.Email,
-                Direccion = p.Direccion,
-                Cedula = p.Cedula,
-                TipoPaciente = p.TipoPaciente
-            }).ToList();
+            var data = await _repository.ObtenerTodosAsync(pagina, tamanioPagina);
+            return _mapper.Map<List<PacienteDto>>(data);
         }
 
-        public async Task<PacienteDto?> GetByIdAsync(int id)
+        public async Task<int> ContarTodosAsync()
         {
-            var p = await _repository.GetByIdAsync(id);
-
-            if (p == null) return null;
-
-            return new PacienteDto
-            {
-                IdPaciente = p.IdPaciente,
-                Nombre = p.Nombre,
-                Apellido = p.Apellido,
-                FechaNacimiento = p.FechaNacimiento,
-                Telefono = p.Telefono,
-                Email = p.Email,
-                Direccion = p.Direccion,
-                Cedula = p.Cedula,
-                TipoPaciente = p.TipoPaciente
-            };
+            return await _repository.ContarTodosAsync();
         }
 
-        public async Task AddAsync(PacienteCrearDto dto)
+        public async Task<List<PacienteDto>> BuscarPacientes(string valor, int pagina, int tamanioPagina)
         {
-            var paciente = new Paciente
-            {
-                Nombre = dto.Nombre,
-                Apellido = dto.Apellido,
-                FechaNacimiento = dto.FechaNacimiento,
-                Telefono = dto.Telefono,
-                Email = dto.Email,
-                Direccion = dto.Direccion,
-                Cedula = dto.Cedula,
-                TipoPaciente = dto.TipoPaciente
-            };
-
-            await _repository.AddAsync(paciente);
+            var data = await _repository.BuscarPacientes(valor, pagina, tamanioPagina);
+            return _mapper.Map<List<PacienteDto>>(data);
         }
 
-        public async Task UpdateAsync(PacienteActualizarDto dto)
+        public async Task<int> ContarPacientesPorBusquedaAsync(string valor)
         {
-            var paciente = new Paciente
-            {
-                IdPaciente = dto.IdPaciente,
-                Nombre = dto.Nombre,
-                Apellido = dto.Apellido,
-                FechaNacimiento = dto.FechaNacimiento,
-                Telefono = dto.Telefono,
-                Email = dto.Email,
-                Direccion = dto.Direccion,
-                Cedula = dto.Cedula,
-                TipoPaciente = dto.TipoPaciente
-            };
-
-            await _repository.UpdateAsync(paciente);
+            return await _repository.ContarPacientesPorBusquedaAsync(valor);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<PacienteDto?> ObtenerPacientePorIdAsync(int id)
         {
-            await _repository.DeleteAsync(id);
+            var data = await _repository.ObtenerPacientePorIdAsync(id);
+            return _mapper.Map<PacienteDto>(data);
+        }
+
+        public async Task<PacienteDto> CrearAsync(PacienteCrearDto dto)
+        {
+            var entity = _mapper.Map<Paciente>(dto);
+            await _repository.CrearAsync(entity);
+            return _mapper.Map<PacienteDto>(entity);
+        }
+
+        public async Task ActualizarAsync(int id, PacienteActualizarDto dto)
+        {
+            var entity = _mapper.Map<Paciente>(dto);
+            entity.IdPaciente = id;
+
+            await _repository.ActualizarAsync(entity);
+        }
+
+        public async Task EliminarAsync(int id)
+        {
+            await _repository.EliminarAsync(id);
         }
     }
 }
