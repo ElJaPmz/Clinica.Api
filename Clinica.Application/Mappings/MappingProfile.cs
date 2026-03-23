@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Clinica.Application.DTOs.Consultorio;
+using Clinica.Application.DTOs.Medico;
 using Clinica.Application.DTOs.Paciente;
 using Clinica.Domain.Entities;
 
@@ -23,6 +24,15 @@ namespace Clinica.Application.Mappings
 
             CreateMap<PacienteActualizarDto, Paciente>()
                 .ForMember(dest => dest.IdPaciente, opt => opt.Ignore());
+            #endregion
+
+            #region Medicos
+            CreateMap<Medico, MedicoDto>();
+            CreateMap<MedicoDto, Medico>();
+
+            CreateMap<Medico, MedicoActualizarDto>();
+            CreateMap<MedicoActualizarDto,Medico>()
+                .ForMember(dest => dest.Id_Medico, opt => opt.Ignore());
             #endregion
         }
     }

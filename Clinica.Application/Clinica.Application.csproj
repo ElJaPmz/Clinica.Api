@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="DTOs\" />
     <Folder Include="Response\" />
-    <Folder Include="Service\" />
     <PackageReference Include="AutoMapper" Version="16.1.1" />
   </ItemGroup>
 

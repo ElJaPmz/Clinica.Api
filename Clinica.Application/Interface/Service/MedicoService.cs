@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Clinica.Application.DTOs.Medico;
-using Clinica.Application.Exceptions;
+//using Clinica.Application.Exceptions;
 using Clinica.Application.Interface.Persistencia;
 using Clinica.Domain.Entities;
 

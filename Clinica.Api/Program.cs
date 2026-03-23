@@ -1,11 +1,11 @@
 using Clinica.Application.Interface.Persistencia;
 using Clinica.Application.Interface.Service;
-using Clinica.Application.Interface.Persistencia;
-using Clinica.Application.Interface.Service;
+
 using Clinica.Application.Service;
 using Clinica.Infrastructure.Data;
 using Clinica.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
+using Clinica.Application.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,10 +50,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //Registrar repositorios con sus interfaces
 builder.Services.AddScoped<IConsultorioRepository, ConsultorioRepository>();
 builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
+builder.Services.AddScoped<IMedicoRepository, MedicoRepository>();
 
 //Registrar servicios con sus interfaces
 builder.Services.AddScoped<IConsultorioService, ConsultorioService>();
 builder.Services.AddScoped<IPacienteService, PacienteService>();
+builder.Services.AddScoped<IMedicoService, MedicoService>();
 
 //Registrar AutoMapper
 builder.Services.AddAutoMapper(cgf => { }, typeof(MappingProfile).Assembly);
