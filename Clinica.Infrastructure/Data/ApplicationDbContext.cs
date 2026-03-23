@@ -15,11 +15,11 @@ namespace Clinica.Infrastructure.Data
         public DbSet<Medico> Medicos => Set<Medico>();
         public DbSet<Especialidad> Especialidads => Set<Especialidad>();
         public DbSet<Cita> Citas => Set<Cita>();
-<<<<<<< HEAD
+
         public DbSet<HistorialCita> HistorialCitas => Set<HistorialCita>();
-=======
+
         public DbSet<Recordatorio> Recordatorios => Set<Recordatorio>();
->>>>>>> origin/Recordatorios
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -277,7 +277,7 @@ namespace Clinica.Infrastructure.Data
 
                 entity.Property(h => h.Fecha_Hora)
                     .IsRequired()
-                    .HasDefaultValueSql("GETDATE()"); // Para SQL Server, asegura la hora del servidor
+                    .HasDefaultValueSql("NOW()"); // Para SQL Server, asegura la hora del servidor
 
                 entity.Property(h => h.Comentario)
                     .HasMaxLength(500); // Espacio generoso para explicar cambios o motivos
@@ -288,7 +288,7 @@ namespace Clinica.Infrastructure.Data
                 entity.HasOne<Cita>()
                     .WithMany()
                     .HasForeignKey(h => h.Id_Cita)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 
             });
