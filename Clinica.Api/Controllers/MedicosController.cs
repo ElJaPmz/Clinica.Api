@@ -3,11 +3,8 @@ using Clinica.Application.Interface.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using Clinica.Application.DTOs.Medico;
-using Clinica.Application.Interface.Service;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Clinica.Application.Response;
 
 namespace Clinica.Api.Controllers
