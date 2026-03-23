@@ -78,7 +78,7 @@ namespace Clinica.Api.Controllers
             //    Apellido = "Perez",
             //    Id_Especialidad = 1,
             //    telefono = 123456789,
-            //    Correo = "
+            //    Correo = " 
         }
 
         // PUT: api/Medicos/5
