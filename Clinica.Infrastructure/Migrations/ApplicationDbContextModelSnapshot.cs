@@ -121,6 +121,42 @@ namespace Clinica.Infrastructure.Migrations
                     b.ToTable("Especialidads");
                 });
 
+            modelBuilder.Entity("Clinica.Domain.Entities.HistorialCita", b =>
+                {
+                    b.Property<int>("Id_Historial")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Historial"));
+
+                    b.Property<string>("Accion")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Comentario")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("Fecha_Hora")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("Id_Cita")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Id_Usuario")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id_Historial");
+
+                    b.HasIndex("Id_Cita");
+
+                    b.ToTable("HistorialCitas");
+                });
+
             modelBuilder.Entity("Clinica.Domain.Entities.Medico", b =>
                 {
                     b.Property<int>("Id_Medico")
@@ -223,6 +259,42 @@ namespace Clinica.Infrastructure.Migrations
                     b.ToTable("Pacientes");
                 });
 
+            modelBuilder.Entity("Clinica.Domain.Entities.Recordatorio", b =>
+                {
+                    b.Property<int>("IdRecordatorio")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdRecordatorio"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("FechaEnvio")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("IdCita")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TipoNotificacion")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("IdRecordatorio");
+
+                    b.HasIndex("FechaEnvio");
+
+                    b.HasIndex("IdCita");
+
+                    b.HasIndex("IdCita", "TipoNotificacion", "FechaEnvio")
+                        .IsUnique();
+
+                    b.ToTable("Recordatorios");
+                });
+
             modelBuilder.Entity("Clinica.Domain.Entities.Cita", b =>
                 {
                     b.HasOne("Clinica.Domain.Entities.Consultorio", null)
@@ -244,12 +316,30 @@ namespace Clinica.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Clinica.Domain.Entities.HistorialCita", b =>
+                {
+                    b.HasOne("Clinica.Domain.Entities.Cita", null)
+                        .WithMany()
+                        .HasForeignKey("Id_Cita")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Clinica.Domain.Entities.Medico", b =>
                 {
                     b.HasOne("Clinica.Domain.Entities.Especialidad", null)
                         .WithMany()
                         .HasForeignKey("Id_Especialidad")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Clinica.Domain.Entities.Recordatorio", b =>
+                {
+                    b.HasOne("Clinica.Domain.Entities.Cita", null)
+                        .WithMany()
+                        .HasForeignKey("IdCita")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

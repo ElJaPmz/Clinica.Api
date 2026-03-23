@@ -1,4 +1,8 @@
+using Clinica.Application.Interface.Persistencia;
+using Clinica.Application.Interface.Service;
+using Clinica.Application.Mappings;
 using Clinica.Infrastructure.Data;
+using Clinica.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,9 +45,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
+//Registrar repositorios con sus interfaces
+builder.Services.AddScoped<IConsultorioRepository, ConsultorioRepository>();
+
+//Registrar servicios con sus interfaces
+builder.Services.AddScoped<IConsultorioService, ConsultorioService>();
+
+//Registrar AutoMapper
+builder.Services.AddAutoMapper(cgf => { }, typeof(MappingProfile).Assembly);
+
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -53,6 +67,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
