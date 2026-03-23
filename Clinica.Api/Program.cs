@@ -1,4 +1,8 @@
+using Clinica.Application.Interface.Persistencia;
+using Clinica.Application.Interface.Service;
+using Clinica.Application.Service;
 using Clinica.Infrastructure.Data;
+using Clinica.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +45,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
+
+//Registrar repositorios con sus interfaces
+builder.Services.AddScoped<IMedicoRepository, MedicoRepository>();
+
+//Registrar ervicios con sus interfaces
+builder.Services.AddScoped<IMedicoService, MedicoService>();
 // Add services to the container.
 
 builder.Services.AddControllers();
