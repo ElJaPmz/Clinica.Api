@@ -20,6 +20,6 @@ namespace Clinica.Application.Response
             NumeroPagina = NumeroPagina<1 ? 1 : NumeroPagina;
         TamanioPagina = tamanioPagina< 1 ? 10 : tamanioPagina;
         TotalPaginas = (int) Math.Ceiling(totalElementos / (double) tamanioPagina);
-    }
+        }
     }
 }

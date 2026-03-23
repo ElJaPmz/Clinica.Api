@@ -2,12 +2,15 @@
 using Clinica.Application.DTOs.Consultorio;
 using Clinica.Application.DTOs.Paciente;
 using Clinica.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Clinica.Application.Mappings
 {
     public class MappingProfile : Profile
     {
-        public MappingProfile()
+        public MappingProfile() 
         {
             #region Consultorios
             CreateMap<Consultorio, ConsultorioDto>();
