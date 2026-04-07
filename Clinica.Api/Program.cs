@@ -61,11 +61,7 @@ builder.Services.AddScoped<IMedicoService, MedicoService>();
 builder.Services.AddAutoMapper(cgf => { }, typeof(MappingProfile).Assembly);
 
 
-//Registrar repositorios con sus interfaces
-builder.Services.AddScoped<IMedicoRepository, MedicoRepository>();
 
-//Registrar ervicios con sus interfaces
-builder.Services.AddScoped<IMedicoService, MedicoService>();
 // Add services to the container.
 
 builder.Services.AddControllers();
