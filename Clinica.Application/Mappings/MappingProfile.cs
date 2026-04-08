@@ -28,6 +28,13 @@ namespace Clinica.Application.Mappings
             CreateMap<PacienteActualizarDto, Paciente>()
                 .ForMember(dest => dest.IdPaciente, opt => opt.Ignore());
             #endregion
+
+            #region Medicos
+            CreateMap<Medico, MedicoDto>();
+            CreateMap<MedicoCrearDto, Medico>();
+            CreateMap<MedicoActualizarDto, Medico>()
+                .ForMember(dest => dest.Id_Medico, opt => opt.Ignore());
+            #endregion
         }
     }
 }

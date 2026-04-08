@@ -17,5 +17,8 @@ namespace Clinica.Domain.Entities
 
 
 
+
+
+
     }
 }
