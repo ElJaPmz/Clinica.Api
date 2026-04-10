@@ -194,18 +194,17 @@ namespace Clinica.Infrastructure.Data
                     .HasMaxLength(30);
 
                 // RELACIONES
-
-                entity.HasOne<Paciente>()
+                entity.HasOne(c => c.Paciente)       // <--- Cambiado de HasOne<Paciente>() a esto
                     .WithMany()
                     .HasForeignKey(c => c.IdPaciente)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne<Medico>()
+                entity.HasOne(c => c.Medico)         // <--- Cambiado de HasOne<Medico>() a esto
                     .WithMany()
                     .HasForeignKey(c => c.IdMedico)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne<Consultorio>()
+                entity.HasOne(c => c.Consultorio)    // <--- Cambiado de HasOne<Consultorio>() a esto
                     .WithMany()
                     .HasForeignKey(c => c.IdConsultorio)
                     .OnDelete(DeleteBehavior.Restrict);
