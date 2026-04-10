@@ -51,11 +51,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IConsultorioRepository, ConsultorioRepository>();
 builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
 builder.Services.AddScoped<IMedicoRepository, MedicoRepository>();
+builder.Services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
 
 //Registrar servicios con sus interfaces
 builder.Services.AddScoped<IConsultorioService, ConsultorioService>();
 builder.Services.AddScoped<IPacienteService, PacienteService>();
 builder.Services.AddScoped<IMedicoService, MedicoService>();
+builder.Services.AddScoped<IEspecialidadService, EspecialidadService>();
 
 //Registrar AutoMapper
 builder.Services.AddAutoMapper(cgf => { }, typeof(MappingProfile).Assembly);
