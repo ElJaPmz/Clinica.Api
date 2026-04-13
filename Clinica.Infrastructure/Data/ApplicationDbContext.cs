@@ -13,7 +13,7 @@ namespace Clinica.Infrastructure.Data
         public DbSet<Consultorio> Consultorios => Set<Consultorio>();
         public DbSet<Paciente> Pacientes => Set<Paciente>();
         public DbSet<Medico> Medicos => Set<Medico>();
-        public DbSet<Especialidad> Especialidads => Set<Especialidad>();
+        public DbSet<Especialidad> Especialidades => Set<Especialidad>();
         public DbSet<Cita> Citas => Set<Cita>();
 
         public DbSet<HistorialCita> HistorialCitas => Set<HistorialCita>();

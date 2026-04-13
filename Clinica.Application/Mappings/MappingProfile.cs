@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Clinica.Application.DTOs.Cita;
 using Clinica.Application.DTOs.Consultorio;
+using Clinica.Application.DTOs.Especialidad;
 using Clinica.Application.DTOs.Medico;
 using Clinica.Application.DTOs.Paciente;
 using Clinica.Domain.Entities;
@@ -62,6 +63,15 @@ namespace Clinica.Application.Mappings
             // Este es el que recibe los datos para actualizar
             CreateMap<CitaActualizarDto, Cita>()
                 .ForMember(dest => dest.IdCita, opt => opt.Ignore());
+            #endregion
+
+            #region Especialidad
+            CreateMap<Especialidad, EspecialidadDto>();
+
+            CreateMap<EspecialidadCrearDto, Especialidad>();
+
+            CreateMap<EspecialidadActualizarDto, Especialidad>()
+                .ForMember(dest => dest.Id_Especialidad, opt => opt.Ignore());
             #endregion
         }
     }
