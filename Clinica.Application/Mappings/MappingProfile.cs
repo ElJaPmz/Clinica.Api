@@ -2,6 +2,7 @@
 using Clinica.Application.DTOs.Cita;
 using Clinica.Application.DTOs.Consultorio;
 using Clinica.Application.DTOs.Especialidad;
+using Clinica.Application.DTOs.HistorialCita;
 using Clinica.Application.DTOs.Medico;
 using Clinica.Application.DTOs.Paciente;
 using Clinica.Domain.Entities;
@@ -72,6 +73,15 @@ namespace Clinica.Application.Mappings
 
             CreateMap<EspecialidadActualizarDto, Especialidad>()
                 .ForMember(dest => dest.Id_Especialidad, opt => opt.Ignore());
+            #endregion
+
+            #region HistorialCitas
+            CreateMap<HistorialCita, HistorialCitaDto>();
+
+            CreateMap<HistorialCitaCrearDto, HistorialCita>();
+
+            CreateMap<HistorialCitaActualizarDto, HistorialCita>()
+                .ForMember(dest => dest.Id_Historial, opt => opt.Ignore());
             #endregion
         }
     }

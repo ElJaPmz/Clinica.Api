@@ -6,6 +6,7 @@ using Clinica.Infrastructure.Data;
 using Clinica.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Clinica.Application.Mappings;
+using Clinica.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +54,7 @@ builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
 builder.Services.AddScoped<IMedicoRepository, MedicoRepository>();
 builder.Services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
 builder.Services.AddScoped<ICitaRepository, CitaRepository>();
+builder.Services.AddScoped<IHistorialCitaRepository, HistorialCitaRepository>();
 
 //Registrar servicios con sus interfaces
 builder.Services.AddScoped<IConsultorioService, ConsultorioService>();
@@ -60,6 +62,7 @@ builder.Services.AddScoped<IPacienteService, PacienteService>();
 builder.Services.AddScoped<IMedicoService, MedicoService>();
 builder.Services.AddScoped<IEspecialidadService, EspecialidadService>();
 builder.Services.AddScoped<ICitaService, CitaService>();
+builder.Services.AddScoped<IHistorialCitaService, HistorialCitaService>();
 
 //Registrar AutoMapper
 builder.Services.AddAutoMapper(cgf => { }, typeof(MappingProfile).Assembly);
