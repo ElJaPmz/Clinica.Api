@@ -40,7 +40,7 @@ namespace Clinica.Application.Mappings
             #endregion
 
             #region Citas
-            // Este es el que envía la información a Swagger y a React Native
+            // Este es el que envía la información a Swagger 
             CreateMap<Cita, CitaDto>()
                 .ForMember(dest => dest.NombreCompletoPaciente,
                            opt => opt.MapFrom(src => src.Paciente != null
