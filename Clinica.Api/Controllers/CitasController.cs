@@ -1,10 +1,12 @@
 ﻿using Clinica.Application.DTOs.Cita;
 using Clinica.Application.Interface.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clinica.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CitasController : ControllerBase

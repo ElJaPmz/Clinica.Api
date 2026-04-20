@@ -1,11 +1,13 @@
 ﻿using Clinica.Application.DTOs.HistorialCita;
 using Clinica.Application.Interface.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Clinica.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class HistorialCitasController : ControllerBase

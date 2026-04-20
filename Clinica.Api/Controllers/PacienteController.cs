@@ -5,10 +5,12 @@ using AutoMapper;
 using Clinica.Application.DTOs.Paciente;
 using Clinica.Application.Interface.Service;
 using Clinica.Application.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clinica.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PacienteController : ControllerBase

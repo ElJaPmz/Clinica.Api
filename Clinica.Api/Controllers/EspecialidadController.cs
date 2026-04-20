@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using Clinica.Application.DTOs.Especialidad;
 using Clinica.Application.Interface.Service;
 using Clinica.Application.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clinica.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class EspecialidadController : ControllerBase

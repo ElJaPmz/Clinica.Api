@@ -5,6 +5,7 @@ using Clinica.Application.DTOs.Especialidad;
 using Clinica.Application.DTOs.HistorialCita;
 using Clinica.Application.DTOs.Medico;
 using Clinica.Application.DTOs.Paciente;
+using Clinica.Application.DTOs.Usuarios;
 using Clinica.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -82,6 +83,15 @@ namespace Clinica.Application.Mappings
 
             CreateMap<HistorialCitaActualizarDto, HistorialCita>()
                 .ForMember(dest => dest.Id_Historial, opt => opt.Ignore());
+            #endregion
+
+            #region Usuarios
+            // Mapeo para el registro de nuevos usuarios
+            CreateMap<UsuarioRegistroDto, Usuario>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()); // Se ignora porque lo hasheamos con BCrypt antes de guardar
+
+            // Si más adelante necesitas devolver los datos del usuario (sin el password)
+            CreateMap<Usuario, UsuarioDto>();
             #endregion
         }
     }

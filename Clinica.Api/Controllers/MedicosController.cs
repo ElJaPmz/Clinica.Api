@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Clinica.Application.DTOs.Medico;
 using Microsoft.AspNetCore.Http;
 using Clinica.Application.Response;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clinica.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class MedicosController : ControllerBase
