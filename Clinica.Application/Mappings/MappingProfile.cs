@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Clinica.Application.DTOs.Cita;
+using Clinica.Application.DTOs.ClinicaPerfil;
 using Clinica.Application.DTOs.Consultorio;
 using Clinica.Application.DTOs.Especialidad;
 using Clinica.Application.DTOs.HistorialCita;
@@ -92,6 +93,15 @@ namespace Clinica.Application.Mappings
 
             // Si más adelante necesitas devolver los datos del usuario (sin el password)
             CreateMap<Usuario, UsuarioDto>();
+            #endregion
+
+            #region ClinicaPerfil
+            // Mapeo para mostrar la información en el GET
+            CreateMap<ClinicaPerfil, ClinicaDto>();
+
+            // Mapeo para actualizar la información desde el PUT
+            CreateMap<ClinicaActualizarDto, ClinicaPerfil>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore()); // El ID no se actualiza desde el DTO
             #endregion
         }
     }

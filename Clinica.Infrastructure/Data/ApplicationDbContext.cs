@@ -18,6 +18,7 @@ namespace Clinica.Infrastructure.Data
         public DbSet<HistorialCita> HistorialCitas => Set<HistorialCita>();
         public DbSet<Recordatorio> Recordatorios => Set<Recordatorio>();
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<ClinicaPerfil> Clinicas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -130,6 +131,40 @@ namespace Clinica.Infrastructure.Data
                 entity.HasIndex(u => u.NombreUsuario).IsUnique();
 
                 entity.HasOne<Medico>().WithMany().HasForeignKey(u => u.Id_Medico).OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // CONFIGURACIÓN PARA INFORMACIÓN PÚBLICA DE LA CLÍNICA
+            builder.Entity<ClinicaPerfil>(entity =>
+            {
+                // Define la Clave Primaria
+                entity.HasKey(c => c.Id);
+
+                // En PostgreSQL, ValueGeneratedOnAdd() mapeará a una columna tipo SERIAL o IDENTITY
+                entity.Property(c => c.Id).ValueGeneratedOnAdd();
+
+                entity.Property(c => c.Nombre)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(c => c.Descripcion)
+                    .IsRequired()
+                    .HasMaxLength(1000); // Más largo para que quepa la historia/misión
+
+                entity.Property(c => c.Direccion)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(c => c.Telefono)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(c => c.Email)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(c => c.ImagenPrincipal)
+                    .IsRequired();
+                // No le pongo MaxLength a la URL por si usas links muy largos de la nube
             });
         }
     }

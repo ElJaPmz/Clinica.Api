@@ -6,6 +6,7 @@ using Clinica.Application.Service;
 using Clinica.Application.Services;
 using Clinica.Infrastructure.Data;
 using Clinica.Infrastructure.Interfaces.Persistencia;
+using Clinica.Infrastructure.Persistencia;
 using Clinica.Infrastructure.Repository;
 using Clinica.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -63,6 +64,7 @@ builder.Services.AddScoped<IEspecialidadRepository, EspecialidadRepository>();
 builder.Services.AddScoped<ICitaRepository, CitaRepository>();
 builder.Services.AddScoped<IHistorialCitaRepository, HistorialCitaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IClinicaRepository, ClinicaRepository>();
 
 //Registrar servicios con sus interfaces
 builder.Services.AddScoped<IConsultorioService, ConsultorioService>();
@@ -74,6 +76,7 @@ builder.Services.AddScoped<IHistorialCitaService, HistorialCitaService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IClinicaService, ClinicaService>();
 
 // Configurar el esquema de autenticación JWT
 builder.Services.AddAuthentication(options =>
