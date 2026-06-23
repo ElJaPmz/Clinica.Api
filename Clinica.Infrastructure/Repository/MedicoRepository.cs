@@ -101,7 +101,15 @@ namespace Clinica.Infrastructure.Repository
             return await _context.Medicos
                 .Where(m => m.Id_Medico == id)
                 .ExecuteDeleteAsync();
-            //.ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<Medico>> ObtenerMedicosPorEspecialidadAsync(int idEspecialidad)
+        {
+            return await _context.Medicos
+                .AsNoTracking()
+                .Where(m => m.Id_Especialidad == idEspecialidad && m.Estado != "Inactivo")
+                .OrderBy(m => m.Nombre)
+                .ToListAsync();
         }
     }
 }

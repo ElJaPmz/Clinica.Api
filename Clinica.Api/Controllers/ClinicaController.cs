@@ -51,7 +51,7 @@ namespace Clinica.API.Controllers
         // PUT: api/Clinica
         [HttpPut]
         [Authorize] // <--- PRIVADO: Requiere Token / Tiene candado
-        public async Task<IActionResult> Put(ClinicaActualizarDto dto)
+        public async Task<ActionResult> Put(ClinicaActualizarDto dto)
         {
             var resultado = await _clinicaService.ActualizarPerfilAsync(dto);
 

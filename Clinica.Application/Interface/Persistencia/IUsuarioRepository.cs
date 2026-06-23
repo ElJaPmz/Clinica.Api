@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Clinica.Domain.Entities;
+﻿using Clinica.Domain.Entities;
 
-namespace Clinica.Infrastructure.Interfaces.Persistencia
+namespace Clinica.Application.Interfaces.Persistence
 {
     public interface IUsuarioRepository
     {
-        // Para buscar si un nombre de usuario ya existe antes de registrarlo
-        Task<Usuario?> GetUsuarioByNombre(string nombreUsuario);
+        // Obtiene un usuario por su ID (string debido a IdentityUser)
+        Task<ApplicationUser?> ObtenerPorIdAsync(string id);
 
-        // Para guardar el nuevo usuario en la tabla
-        Task AddUsuario(Usuario usuario);
+        // Realiza una búsqueda paginada de usuarios
+        Task<IEnumerable<ApplicationUser>> BuscarUsuarioAsync(string valor, int pagina, int tamanoPagina);
 
-        // Para confirmar los cambios en la DB
-        Task<bool> SaveChangesAsync();
+        // Obtiene la lista completa de usuarios de forma paginada
+        Task<IEnumerable<ApplicationUser>> ObtenerTodosAsync(int pagina, int tamanoPagina);
 
-        // NUEVOS MÉTODOS
-        Task<IEnumerable<Usuario>> GetAllUsuarios(); // Para el listado
-        Task<Usuario?> GetUsuarioById(int id);       // Para buscar por ID antes de editar/borrar
-        void UpdateUsuario(Usuario usuario);         // Para actualizar datos
-        void DeleteUsuario(Usuario usuario);         // Para eliminar
+        // Cuenta el total de usuarios en la base de datos
+        Task<int> ContarAsync();
+
+        // Cuenta el total de resultados encontrados en una búsqueda específica
+        Task<int> ContarBusquedaAsync(string valor);
     }
 }

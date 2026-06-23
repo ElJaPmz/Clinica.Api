@@ -1,10 +1,10 @@
-﻿using Clinica.Domain.Entities;
+using Clinica.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Clinica.Infrastructure.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -17,15 +17,28 @@ namespace Clinica.Infrastructure.Data
         public DbSet<Cita> Citas => Set<Cita>();
         public DbSet<HistorialCita> HistorialCitas => Set<HistorialCita>();
         public DbSet<Recordatorio> Recordatorios => Set<Recordatorio>();
-        public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<ClinicaPerfil> Clinicas { get; set; }
+        public DbSet<ClinicaPerfil> Clinicas => Set<ClinicaPerfil>();
+        public DbSet<TipoCita> TipoCitas => Set<TipoCita>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // 1. Configuración base de Identity
             base.OnModelCreating(builder);
 
-            // CONSULTORIOS
-            builder.Entity<Consultorio>(entity =>
+            // 2. Configuración de ApplicationUser
+            builder.Entity<ApplicationUser>(static entity =>
+            {
+                entity.Property(u => u.NombreCompleto).IsRequired().HasMaxLength(150);
+                entity.Property(u => u.Activo).HasDefaultValue(true);
+
+                entity.HasOne<Medico>()
+                    .WithMany()
+                    .HasForeignKey(u => u.Id_Medico)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // 3. Consultorio
+            builder.Entity<Consultorio>(static entity =>
             {
                 entity.HasKey(c => c.Id_Consultorio);
                 entity.Property(c => c.Id_Consultorio).ValueGeneratedOnAdd();
@@ -35,136 +48,141 @@ namespace Clinica.Infrastructure.Data
                 entity.HasIndex(c => c.NumeroConsultorio).IsUnique();
             });
 
-            // PACIENTES
-            builder.Entity<Paciente>(entity =>
+            // 4. Paciente
+            builder.Entity<Paciente>(static entity =>
             {
                 entity.HasKey(p => p.IdPaciente);
                 entity.Property(p => p.IdPaciente).ValueGeneratedOnAdd();
                 entity.Property(p => p.Nombre).IsRequired().HasMaxLength(100);
                 entity.Property(p => p.Apellido).IsRequired().HasMaxLength(100);
-                entity.Property(p => p.FechaNacimiento).IsRequired();
-                entity.Property(p => p.Telefono).IsRequired().HasMaxLength(20);
-                entity.Property(p => p.Email).IsRequired().HasMaxLength(100);
-                entity.Property(p => p.Direccion).IsRequired().HasMaxLength(200);
                 entity.Property(p => p.Cedula).IsRequired().HasMaxLength(19);
-                entity.Property(p => p.TipoPaciente).IsRequired().HasMaxLength(20);
                 entity.HasIndex(p => p.Cedula).IsUnique();
+
+                entity.ToTable(p =>
+                {
+                    p.HasCheckConstraint("CK_Paciente_Email", "\"Email\" LIKE '%_@__%.__%'");
+                });
             });
 
-            // MEDICOS
-            builder.Entity<Medico>(entity =>
+            // 5. Médico
+            builder.Entity<Medico>(static entity =>
             {
                 entity.HasKey(m => m.Id_Medico);
                 entity.Property(m => m.Id_Medico).ValueGeneratedOnAdd();
                 entity.Property(m => m.Nombre).IsRequired().HasMaxLength(50);
-                entity.Property(m => m.Apellido).IsRequired().HasMaxLength(50);
-                entity.Property(m => m.Id_Especialidad).IsRequired();
-                entity.Property(m => m.telefono).IsRequired().HasMaxLength(10);
                 entity.Property(m => m.Correo).IsRequired().HasMaxLength(100);
-                entity.Property(m => m.Estado).IsRequired().HasMaxLength(50);
                 entity.HasIndex(m => m.Correo).IsUnique();
-                entity.HasIndex(m => m.telefono).IsUnique();
-                entity.HasOne<Especialidad>().WithMany().HasForeignKey(m => m.Id_Especialidad).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(m => m.Especialidad)
+                    .WithMany()
+                    .HasForeignKey(m => m.Id_Especialidad)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
             });
 
-            // ESPECIALIDADES
-            builder.Entity<Especialidad>(entity =>
+            // 5b. TipoCita
+            builder.Entity<TipoCita>(entity =>
             {
-                entity.HasKey(e => e.Id_Especialidad);
-                entity.Property(e => e.Id_Especialidad).ValueGeneratedOnAdd();
-                entity.Property(e => e.Nombre_Especialidad).IsRequired().HasMaxLength(50);
-                entity.HasIndex(e => e.Nombre_Especialidad).IsUnique();
+                entity.HasKey(t => t.Id_TipoCita);
+                entity.Property(t => t.Id_TipoCita).ValueGeneratedOnAdd();
+                entity.Property(t => t.Nombre_TipoCita).IsRequired().HasMaxLength(100);
+
+                entity.HasOne(t => t.Especialidad)
+                    .WithMany()
+                    .HasForeignKey(t => t.Id_Especialidad)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
             });
 
-            // CITAS
-            builder.Entity<Cita>(entity =>
+            // 6. Cita
+            builder.Entity<Cita>(static entity =>
             {
                 entity.HasKey(c => c.IdCita);
                 entity.Property(c => c.IdCita).ValueGeneratedOnAdd();
+
+                // Configuración de tipos para Postgres
+                entity.Property(c => c.Fecha).IsRequired().HasColumnType("date");
+                entity.Property(c => c.HoraInicio).IsRequired();
+                entity.Property(c => c.HoraFin).IsRequired();
+
                 entity.Property(c => c.EstadoCita).IsRequired().HasMaxLength(30);
                 entity.Property(c => c.TipoCita).IsRequired().HasMaxLength(30);
 
-                entity.HasOne(c => c.Paciente).WithMany().HasForeignKey(c => c.IdPaciente).OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(c => c.Medico).WithMany().HasForeignKey(c => c.IdMedico).OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(c => c.Consultorio).WithMany().HasForeignKey(c => c.IdConsultorio).OnDelete(DeleteBehavior.Restrict);
+                // Relación con Paciente
+                entity.HasOne(c => c.Paciente)
+                    .WithMany(p => p.Citas)
+                    .HasForeignKey(c => c.IdPaciente)
+                    .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasIndex(c => new { c.IdMedico, c.Fecha, c.HoraInicio }).IsUnique();
-                entity.HasIndex(c => new { c.IdConsultorio, c.Fecha, c.HoraInicio }).IsUnique();
+                // Relación con Médico (Usando IdMedico de la clase Cita)
+                entity.HasOne(c => c.Medico)
+                    .WithMany(m => m.Citas)
+                    .HasForeignKey(c => c.IdMedico)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // --- ESTA ES LA PARTE QUE FALTABA ---
+                entity.HasOne(c => c.Consultorio)
+                    .WithMany() // O .WithMany(con => con.Citas) si agregas la lista en Consultorio
+                    .HasForeignKey(c => c.IdConsultorio)
+                    .OnDelete(DeleteBehavior.Restrict);
+                // ------------------------------------
+
+                entity.ToTable(c =>
+                {
+                    c.HasCheckConstraint(
+                        "CK_Cita_Estado",
+                        "\"EstadoCita\" IN ('Pendiente', 'Confirmada', 'Atendida', 'Cancelada', 'Ausente')"
+                    );
+                });
             });
 
-            // RECORDATORIOS
-            builder.Entity<Recordatorio>(entity =>
-            {
-                entity.HasKey(r => r.IdRecordatorio);
-                entity.Property(r => r.IdRecordatorio).ValueGeneratedOnAdd();
-                entity.Property(r => r.TipoNotificacion).IsRequired().HasMaxLength(20);
-                entity.Property(r => r.Estado).IsRequired().HasMaxLength(20);
-
-                entity.HasOne<Cita>().WithMany().HasForeignKey(r => r.IdCita).OnDelete(DeleteBehavior.Cascade);
-                entity.HasIndex(r => new { r.IdCita, r.TipoNotificacion, r.FechaEnvio }).IsUnique();
-            });
-
-            // HISTORIAL DE CITAS
-            builder.Entity<HistorialCita>(entity =>
+            // 7. HistorialCita
+            builder.Entity<HistorialCita>(static entity =>
             {
                 entity.HasKey(h => h.Id_Historial);
-                entity.Property(h => h.Id_Historial).ValueGeneratedOnAdd();
-                entity.Property(h => h.Accion).IsRequired().HasMaxLength(20);
-                entity.Property(h => h.Fecha_Hora).IsRequired().HasDefaultValueSql("NOW()"); 
-                entity.Property(h => h.Comentario).HasMaxLength(500);
+                entity.Property(h => h.Accion).IsRequired().HasMaxLength(50);
+                entity.Property(h => h.Fecha_Hora).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.HasOne<Cita>().WithMany().HasForeignKey(h => h.Id_Cita).OnDelete(DeleteBehavior.Restrict);
-
-                // Relación con Usuario
-                entity.HasOne<Usuario>().WithMany().HasForeignKey(h => h.Id_Usuario).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne<Cita>()
+                    .WithMany()
+                    .HasForeignKey(h => h.Id_Cita)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // USUARIOS
-            builder.Entity<Usuario>(entity =>
+            // 8. Clínica Perfil
+            builder.Entity<ClinicaPerfil>(static entity =>
             {
-                entity.HasKey(u => u.Id_Usuario);
-                entity.Property(u => u.Id_Usuario).ValueGeneratedOnAdd();
-                entity.Property(u => u.NombreUsuario).IsRequired().HasMaxLength(50);
-                entity.Property(u => u.PasswordHash).IsRequired();
-                entity.Property(u => u.Rol).IsRequired().HasMaxLength(30);
-
-                entity.HasIndex(u => u.NombreUsuario).IsUnique();
-
-                entity.HasOne<Medico>().WithMany().HasForeignKey(u => u.Id_Medico).OnDelete(DeleteBehavior.SetNull);
-            });
-
-            // CONFIGURACIÓN PARA INFORMACIÓN PÚBLICA DE LA CLÍNICA
-            builder.Entity<ClinicaPerfil>(entity =>
-            {
-                // Define la Clave Primaria
                 entity.HasKey(c => c.Id);
+                entity.Property(c => c.Nombre).IsRequired().HasMaxLength(100);
+                entity.Property(c => c.Email).IsRequired().HasMaxLength(100);
+                entity.Property(c => c.ImagenPrincipal).IsRequired().HasMaxLength(500);
+            });
 
-                // En PostgreSQL, ValueGeneratedOnAdd() mapeará a una columna tipo SERIAL o IDENTITY
-                entity.Property(c => c.Id).ValueGeneratedOnAdd();
+            // 9. Especialidad (Corregido con tus nombres exactos)
+            builder.Entity<Especialidad>(static entity =>
+            {
+                entity.HasKey(e => e.Id_Especialidad); // PK manual
+                entity.Property(e => e.Id_Especialidad).ValueGeneratedOnAdd();
+                entity.Property(e => e.Nombre_Especialidad).IsRequired().HasMaxLength(100);
+            });
 
-                entity.Property(c => c.Nombre)
-                    .IsRequired()
-                    .HasMaxLength(100);
+            // 10. Recordatorio (Corregido con tus nombres exactos)
+            builder.Entity<Recordatorio>(static entity =>
+            {
+                entity.HasKey(r => r.IdRecordatorio); // PK manual
+                entity.Property(r => r.IdRecordatorio).ValueGeneratedOnAdd();
 
-                entity.Property(c => c.Descripcion)
-                    .IsRequired()
-                    .HasMaxLength(1000); // Más largo para que quepa la historia/misión
+                entity.Property(r => r.TipoNotificacion).IsRequired().HasMaxLength(50);
+                entity.Property(r => r.Estado).IsRequired().HasMaxLength(50);
 
-                entity.Property(c => c.Direccion)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                // Para Postgres usamos el tipo timestamp
+                entity.Property(r => r.FechaEnvio).IsRequired().HasColumnType("timestamp without time zone");
 
-                entity.Property(c => c.Telefono)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(c => c.Email)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(c => c.ImagenPrincipal)
-                    .IsRequired();
-                // No le pongo MaxLength a la URL por si usas links muy largos de la nube
+                // Relación con Cita
+                entity.HasOne<Cita>()
+                    .WithMany()
+                    .HasForeignKey(r => r.IdCita)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

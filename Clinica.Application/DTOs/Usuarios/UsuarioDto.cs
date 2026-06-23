@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Clinica.Application.DTOs.Usuarios
 {
     public class UsuarioDto
     {
-        public int Id_Usuario { get; set; }
-        public string NombreUsuario { get; set; } = string.Empty;
-        public string Rol { get; set; } = string.Empty;
-        public int? Id_Medico { get; set; }
+        public string Id { get; set; } = null!;
+        public string NombreCompleto { get; set; } = null!;
+        public string PhoneNumber { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string Rol { get; set; } = null!;
+        public bool Activo { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Clinica.Application.DTOs.Cita;
 using Clinica.Application.Interface.Persistencia;
 using Clinica.Application.Interface.Service;
@@ -9,11 +9,19 @@ namespace Clinica.Application.Service
     public class CitaService : ICitaService
     {
         private readonly ICitaRepository _citaRepository;
+        private readonly IMedicoRepository _medicoRepository;
+        private readonly ITipoCitaRepository _tipoCitaRepository;
         private readonly IMapper _mapper;
 
-        public CitaService(ICitaRepository citaRepository, IMapper mapper)
+        public CitaService(
+            ICitaRepository citaRepository,
+            IMedicoRepository medicoRepository,
+            ITipoCitaRepository tipoCitaRepository,
+            IMapper mapper)
         {
             _citaRepository = citaRepository;
+            _medicoRepository = medicoRepository;
+            _tipoCitaRepository = tipoCitaRepository;
             _mapper = mapper;
         }
 
@@ -31,7 +39,17 @@ namespace Clinica.Application.Service
 
         public async Task<CitaDto> CrearAsync(CitaCrearDto dto)
         {
-            // 1. VALIDACIÓN: ¿Médico ocupado?
+            // 1. VALIDACIÓN: ¿Compatibilidad médico-tipo de cita?
+            var medico = await _medicoRepository.ObtenerMedicoPorIdAsync(dto.IdMedico)
+                ?? throw new Exception("El médico seleccionado no existe.");
+
+            var tipoCitaValido = await _tipoCitaRepository.ObtenerPorNombreYEspecialidadAsync(
+                dto.TipoCita, medico.Id_Especialidad);
+
+            if (tipoCitaValido == null)
+                throw new Exception("El doctor seleccionado no puede atender este tipo de cita.");
+
+            // 2. VALIDACIÓN: ¿Médico ocupado?
             var citasMedico = await _citaRepository.ObtenerCitasPorMedicoAsync(dto.IdMedico);
             bool choqueMedico = citasMedico.Any(c =>
                 c.Fecha.Date == dto.Fecha.Date &&
@@ -41,7 +59,7 @@ namespace Clinica.Application.Service
             if (choqueMedico)
                 throw new Exception("El médico ya tiene otra cita programada en ese horario.");
 
-            // 2. VALIDACIÓN: ¿Consultorio ocupado?
+            // 3. VALIDACIÓN: ¿Consultorio ocupado?
             var todasLasCitas = await _citaRepository.ObtenerTodasAsync();
             bool choqueConsultorio = todasLasCitas.Any(c =>
                 c.IdConsultorio == dto.IdConsultorio &&
@@ -52,16 +70,16 @@ namespace Clinica.Application.Service
             if (choqueConsultorio)
                 throw new Exception("El consultorio ya está reservado por otro médico en ese horario.");
 
-            // 3. Mapeamos el DTO a la Entidad para guardar
+            // 4. Mapeamos el DTO a la Entidad para guardar
             var citaEntidad = _mapper.Map<Cita>(dto);
 
-            // 4. Guardamos en la base de datos
+            // 5. Guardamos en la base de datos
             await _citaRepository.CrearAsync(citaEntidad);
 
-            // 5. RECARGAMOS: Buscamos la cita con sus .Include() para traer los nombres
+            // 6. RECARGAMOS: Buscamos la cita con sus .Include() para traer los nombres
             var citaCompleta = await _citaRepository.ObtenerPorIdAsync(citaEntidad.IdCita);
 
-            // 6. Retornamos el DTO con la información completa (nombres incluidos)
+            // 7. Retornamos el DTO con la información completa (nombres incluidos)
             return _mapper.Map<CitaDto>(citaCompleta);
         }
 
@@ -71,7 +89,17 @@ namespace Clinica.Application.Service
             var citaExistente = await _citaRepository.ObtenerPorIdAsync(id);
             if (citaExistente == null) return false;
 
-            // 2. VALIDACIÓN: ¿Médico ocupado?
+            // 2. VALIDACIÓN: ¿Compatibilidad médico-tipo de cita?
+            var medico = await _medicoRepository.ObtenerMedicoPorIdAsync(dto.IdMedico)
+                ?? throw new Exception("El médico seleccionado no existe.");
+
+            var tipoCitaValido = await _tipoCitaRepository.ObtenerPorNombreYEspecialidadAsync(
+                dto.TipoCita, medico.Id_Especialidad);
+
+            if (tipoCitaValido == null)
+                throw new Exception("El doctor seleccionado no puede atender este tipo de cita.");
+
+            // 3. VALIDACIÓN: ¿Médico ocupado?
             var citasMedico = await _citaRepository.ObtenerCitasPorMedicoAsync(dto.IdMedico);
             bool choqueMedico = citasMedico.Any(c =>
                 c.IdCita != id &&
@@ -82,8 +110,7 @@ namespace Clinica.Application.Service
             if (choqueMedico)
                 throw new Exception("El médico ya tiene otra cita programada en ese horario.");
 
-            // 3. VALIDACIÓN: ¿Consultorio ocupado?
-            // Primero necesitamos obtener las citas de ese consultorio
+            // 4. VALIDACIÓN: ¿Consultorio ocupado?
             var todasLasCitas = await _citaRepository.ObtenerTodasAsync();
 
             bool choqueConsultorio = todasLasCitas.Any(c =>
@@ -96,7 +123,7 @@ namespace Clinica.Application.Service
             if (choqueConsultorio)
                 throw new Exception("El consultorio ya está reservado por otro médico en ese horario.");
 
-            // 4. Si pasa ambas, guardamos
+            // 5. Si pasa todas las validaciones, guardamos
             _mapper.Map(dto, citaExistente);
             await _citaRepository.ActualizarAsync(citaExistente);
             return true;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,6 +15,11 @@ namespace Clinica.Domain.Entities
         public string Correo { get; set; } = string.Empty;
         public string Estado { get; set; } = string.Empty;
 
+
+        public virtual ICollection<Cita> Citas { get; set; } = new List<Cita>();
+
+        // Navegación
+        public virtual Especialidad Especialidad { get; set; } = null!;
 
 
 

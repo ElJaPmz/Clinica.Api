@@ -1,16 +1,24 @@
-﻿using Clinica.Application.DTOs;
-using Clinica.Application.DTOs.Usuarios;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Clinica.Application.DTOs.Usuarios;
+using Clinica.Application.Response;
 
-namespace Clinica.Application.Interface.Service
+namespace Clinica.Application.Interfaces.Service
 {
     public interface IUsuarioService
     {
-        Task<IEnumerable<UsuarioDto>> ObtenerTodos();
-        Task<UsuarioDto?> ObtenerPorId(int id);
-        Task<bool> Actualizar(int id, UsuarioDto usuarioDto); // <--- NUEVO
-        Task<bool> Eliminar(int id);
+        // Gestión de Autenticación
+        Task<LoginRespuestaUsuarioDto> LoginAsync(UsuarioLoginDto dto);
+
+        // Gestión de Cuentas
+        Task<UsuarioDto> RegistrarUsuario(UsuarioRegistroDto dto);
+        Task CambiarEstadoAsync(string id, bool activo);
+
+        // Consultas de Usuarios
+        Task<ICollection<UsuarioDto>> ObtenerUsuariosAsync(int pagina, int tamanoPagina);
+        Task<IEnumerable<UsuarioDto>> BuscarUsuarioAsync(string valor, int pagina, int tamanoPagina);
+        Task<UsuarioDto> ObtenerUsuarioPorIdAsync(string id);
+
+        // Métodos de apoyo para paginación (Estilo StayInn)
+        Task<int> ContarAsync();
+        Task<int> ContarBusquedaAsync(string valor);
     }
 }

@@ -1,9 +1,9 @@
-﻿using Clinica.Domain.Entities;
+﻿using Clinica.Application.Interfaces.Persistence;
+using Clinica.Domain.Entities;
 using Clinica.Infrastructure.Data;
-using Clinica.Infrastructure.Interfaces.Persistencia;
 using Microsoft.EntityFrameworkCore;
 
-namespace Clinica.Infrastructure.Repository
+namespace Clinica.Infrastructure.Persistence.Repositories
 {
     public class UsuarioRepository : IUsuarioRepository
     {
@@ -14,43 +14,46 @@ namespace Clinica.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<Usuario?> GetUsuarioByNombre(string nombreUsuario)
+        public async Task<IEnumerable<ApplicationUser>> BuscarUsuarioAsync(string valor, int pagina, int tamanoPagina)
         {
-            // Buscamos el usuario por su nombre de usuario de forma asíncrona
-            return await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.NombreUsuario == nombreUsuario);
+            var valorNormalizado = valor.Trim().ToLower();
+            var pattern = $"%{valorNormalizado}%";
+
+            return await _context.Users
+                .Where(u =>
+                    EF.Functions.Like(u.NombreCompleto.ToLower(), pattern) ||
+                    EF.Functions.Like(u.Email!.ToLower(), pattern) ||
+                    EF.Functions.Like(u.PhoneNumber!.ToLower(), pattern))
+                .OrderBy(u => u.NombreCompleto)
+                .Skip((pagina - 1) * tamanoPagina)
+                .Take(tamanoPagina)
+                .ToListAsync();
         }
 
-        public async Task AddUsuario(Usuario usuario)
+        public async Task<int> ContarAsync()
+            => await _context.Users.CountAsync();
+
+        public async Task<int> ContarBusquedaAsync(string valor)
         {
-            // Agregamos el nuevo usuario al contexto
-            await _context.Usuarios.AddAsync(usuario);
+            var valorNormalizado = valor.Trim().ToLower();
+            var pattern = $"%{valorNormalizado}%";
+
+            return await _context.Users
+                .Where(u =>
+                    EF.Functions.Like(u.NombreCompleto.ToLower(), pattern) ||
+                    EF.Functions.Like(u.Email!.ToLower(), pattern) ||
+                    EF.Functions.Like(u.PhoneNumber!.ToLower(), pattern))
+                .CountAsync();
         }
 
-        public async Task<bool> SaveChangesAsync()
-        {
-            // Guardamos los cambios en la base de datos y retornamos true si se guardó algo
-            return (await _context.SaveChangesAsync()) > 0;
-        }
+        public async Task<ApplicationUser?> ObtenerPorIdAsync(string id)
+            => await _context.Users.FindAsync(id);
 
-        public async Task<IEnumerable<Usuario>> GetAllUsuarios()
-        {
-            return await _context.Usuarios.ToListAsync();
-        }
-
-        public async Task<Usuario?> GetUsuarioById(int id)
-        {
-            return await _context.Usuarios.FindAsync(id);
-        }
-
-        public void UpdateUsuario(Usuario usuario)
-        {
-            _context.Usuarios.Update(usuario);
-        }
-
-        public void DeleteUsuario(Usuario usuario)
-        {
-            _context.Usuarios.Remove(usuario);
-        }
+        public async Task<IEnumerable<ApplicationUser>> ObtenerTodosAsync(int pagina, int tamanoPagina)
+            => await _context.Users
+                .OrderBy(u => u.NombreCompleto)
+                .Skip((pagina - 1) * tamanoPagina)
+                .Take(tamanoPagina)
+                .ToListAsync();
     }
 }

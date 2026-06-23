@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -60,6 +60,19 @@ namespace Clinica.Api.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            // Validar que el paciente sea mayor de edad si la petición no es de un Administrador
+            if (!User.IsInRole("Administrador"))
+            {
+                var hoy = DateTime.Today;
+                var edad = hoy.Year - dto.FechaNacimiento.Year;
+                if (dto.FechaNacimiento.Date > hoy.AddYears(-edad)) edad--;
+
+                if (edad < 18)
+                {
+                    return BadRequest("El paciente debe ser mayor de edad (mínimo 18 años) para registrarse.");
+                }
             }
 
             try

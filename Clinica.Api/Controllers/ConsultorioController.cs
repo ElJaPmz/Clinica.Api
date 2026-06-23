@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Clinica.Api.Controllers
 {
     [Authorize]
+    
     [ApiController]
     [Route("api/[controller]")]
     public class ConsultorioController : ControllerBase
@@ -22,6 +23,18 @@ namespace Clinica.Api.Controllers
         {
             _consultorioService = consultorioService;
             _mapper = mapper;
+        }
+
+        [HttpGet("debug")]
+        [Authorize]
+        public IActionResult Debug()
+        {
+            return Ok(new
+            {
+                name = User.Identity?.Name,
+                claims = User.Claims.Select(c => new { c.Type, c.Value }),
+                role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+            });
         }
 
         [HttpGet("ObtenerTodos")]

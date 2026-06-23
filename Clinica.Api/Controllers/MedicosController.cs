@@ -130,13 +130,18 @@ namespace Clinica.Api.Controllers
 
         // DELETE: api/Medicos/5
         [HttpDelete("{id}")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Eliminar(int id)
         {
             await _service.EliminarAsync(id);
-                //.ConfigureAwait(false);
             return NoContent();
+        }
+
+        // GET: api/Medicos/especialidad/3
+        [HttpGet("especialidad/{idEspecialidad:int}")]
+        public async Task<ActionResult<IEnumerable<MedicoDto>>> GetPorEspecialidad(int idEspecialidad)
+        {
+            var medicos = await _service.ObtenerMedicosPorEspecialidadAsync(idEspecialidad);
+            return Ok(medicos);
         }
     }
 }

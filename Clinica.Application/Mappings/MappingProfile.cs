@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Clinica.Application.DTOs.Cita;
 using Clinica.Application.DTOs.ClinicaPerfil;
 using Clinica.Application.DTOs.Consultorio;
@@ -6,6 +6,7 @@ using Clinica.Application.DTOs.Especialidad;
 using Clinica.Application.DTOs.HistorialCita;
 using Clinica.Application.DTOs.Medico;
 using Clinica.Application.DTOs.Paciente;
+using Clinica.Application.DTOs.TipoCita;
 using Clinica.Application.DTOs.Usuarios;
 using Clinica.Domain.Entities;
 using System;
@@ -70,11 +71,13 @@ namespace Clinica.Application.Mappings
 
             #region Especialidad
             CreateMap<Especialidad, EspecialidadDto>();
-
             CreateMap<EspecialidadCrearDto, Especialidad>();
-
             CreateMap<EspecialidadActualizarDto, Especialidad>()
                 .ForMember(dest => dest.Id_Especialidad, opt => opt.Ignore());
+            #endregion
+
+            #region TipoCita
+            CreateMap<TipoCita, TipoCitaDto>();
             #endregion
 
             #region HistorialCitas
@@ -87,13 +90,13 @@ namespace Clinica.Application.Mappings
             #endregion
 
             #region Usuarios
-            // Mapeo para el registro de nuevos usuarios
-            CreateMap<UsuarioRegistroDto, Usuario>()
-                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()); // Se ignora porque lo hasheamos con BCrypt antes de guardar
+            CreateMap<ApplicationUser, UsuarioDto>();
 
-            // Si más adelante necesitas devolver los datos del usuario (sin el password)
-            CreateMap<Usuario, UsuarioDto>();
+            CreateMap<UsuarioRegistroDto, ApplicationUser>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
             #endregion
+
 
             #region ClinicaPerfil
             // Mapeo para mostrar la información en el GET

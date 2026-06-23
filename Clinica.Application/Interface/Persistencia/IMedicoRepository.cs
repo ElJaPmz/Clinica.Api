@@ -1,4 +1,4 @@
-﻿using Clinica.Domain.Entities;
+using Clinica.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +13,7 @@ namespace Clinica.Application.Interface.Persistencia
         Task<IEnumerable<Medico>> BuscarMedicosAsync(string valor, int pagina, int tamanioPagina);
         Task<int> BuscarTodosAsync();
         Task<int> ContarMedicosPorBusquedaAsync(string valor);
+        Task<IEnumerable<Medico>> ObtenerMedicosPorEspecialidadAsync(int idEspecialidad);
 
         //Metodos de modificacion
         Task CrearAsync(Medico medico);

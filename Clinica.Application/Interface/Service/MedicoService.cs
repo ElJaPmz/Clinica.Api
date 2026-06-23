@@ -54,12 +54,15 @@ namespace Clinica.Application.Interface.Service
 
         public async Task<int> BuscarTodosAsync()
           => await _repository.BuscarTodosAsync();
-        //.ConfigureAwait(false);
-
 
         public async Task<int> ContarMedicosPorBusquedaAsync(string valor)
             => await _repository.ContarMedicosPorBusquedaAsync(valor);
-                //.ConfigureAwait(false);
+
+        public async Task<IEnumerable<MedicoDto>> ObtenerMedicosPorEspecialidadAsync(int idEspecialidad)
+        {
+            var medicos = await _repository.ObtenerMedicosPorEspecialidadAsync(idEspecialidad);
+            return _mapper.Map<IEnumerable<MedicoDto>>(medicos);
+        }
         
 
         public async Task<MedicoDto> CrearAsync(MedicoCrearDto dto)

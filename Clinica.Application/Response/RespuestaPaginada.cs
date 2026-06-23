@@ -13,13 +13,16 @@ namespace Clinica.Application.Response
         public int TamanioPagina { get; set; }
 
 
-        public RespuestaPaginada(IEnumerable<T>  elementos, int totalElementos, int NumeroPagina, int tamanioPagina)
+        public RespuestaPaginada(IEnumerable<T> elementos, int totalElementos, int NumeroPagina, int tamanioPagina)
         {
             Elementos = elementos;
             TotalElementos = totalElementos;
-            NumeroPagina = NumeroPagina<1 ? 1 : NumeroPagina;
-        TamanioPagina = tamanioPagina< 1 ? 10 : tamanioPagina;
-        TotalPaginas = (int) Math.Ceiling(totalElementos / (double) tamanioPagina);
+            TamanioPagina = tamanioPagina < 1 ? 10 : tamanioPagina;
+            TotalPaginas = (int)Math.Ceiling(totalElementos / (double)TamanioPagina);
+
+            // FIX: Tienes que asignar el valor a la propiedad de la clase
+            // Usamos 'this' para que C# sepa que hablamos de la propiedad y no del parámetro
+            this.NumeroPagina = NumeroPagina < 1 ? 1 : NumeroPagina;
         }
     }
 }

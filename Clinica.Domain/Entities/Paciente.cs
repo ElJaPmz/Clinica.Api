@@ -25,5 +25,7 @@ namespace Clinica.Domain.Entities
 
         public string TipoPaciente { get; set; } = null!;
 
+        public virtual ICollection<Cita> Citas { get; set; } = new List<Cita>();
+
     }
 }
