@@ -5,21 +5,21 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Copiar archivos de proyecto
-COPY ["StayInn.slnx", "./"]
-COPY ["StayInn.Api/StayInn.Api.csproj", "StayInn.Api/"]
-COPY ["StayInn.Application/StayInn.Application.csproj", "StayInn.Application/"]
-COPY ["StayInn.Domain/StayInn.Domain.csproj", "StayInn.Domain/"]
-COPY ["StayInn.Infrastructure/StayInn.Infrastructure.csproj", "StayInn.Infrastructure/"]
+COPY ["Clinica.Api.slnx", "./"]
+COPY ["Clinica.Api/Clinica.Api.csproj", "Clinica.Api/"]
+COPY ["Clinica.Application/Clinica.Application.csproj", "Clinica.Application/"]
+COPY ["Clinica.Domain/Clinica.Domain.csproj", "Clinica.Domain/"]
+COPY ["Clinica.Infrastructure/Clinica.Infrastructure.csproj", "Clinica.Infrastructure/"]
 
 # Restaurar dependencias
-RUN dotnet restore "StayInn.slnx"
+RUN dotnet restore "Clinica.Api.slnx"
 
 # Copiar todo el código y publicar
 COPY . .
 
 # Publicar la API
-WORKDIR "/src/StayInn.Api"
-RUN dotnet publish "StayInn.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+WORKDIR "/src/Clinica.Api"
+RUN dotnet publish "Clinica.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # ===============================
 # RUNTIME
@@ -37,4 +37,4 @@ COPY --from=build /app/publish .
 ENV ASPNETCORE_URLS=http://+:${PORT}
 EXPOSE 8080
 
-ENTRYPOINT ["dotnet", "StayInn.Api.dll"]
+ENTRYPOINT ["dotnet", "Clinica.Api.dll"]
