@@ -247,7 +247,7 @@ builder.Services.AddCors(options =>
         }
         else
         {
-            policy.WithOrigins("https://tu-clinica-deploy.app")
+            policy.WithOrigins("https://clinicasave.netlify.app")// del deslpiegue netlify
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         }
